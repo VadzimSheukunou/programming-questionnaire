@@ -12,7 +12,7 @@ services:
       - "3000:3000"
     command: npm start
     volumes:
-      - .:/srv/app/ui/
+      - ./programming-questionnaire-ui:/srv/app/ui/
       - /srv/app/ui/node_modules
 
   app:
@@ -27,7 +27,7 @@ services:
       - "8000:8000"
     command: [sh, -c, "npm run sync && npm run seeders:load && npm start"]
     volumes:
-      - .:/srv/app/server/
+      - ./programming-questionnaire-server:/srv/app/server/
       - /srv/app/server/node_modules
 
   postgres:
