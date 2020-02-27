@@ -1,8 +1,8 @@
 import Sequelize from 'sequelize';
 let sequelize;
 
-if (process.env.DATABASE_CONNECTION_STRING) {
-  sequelize = new Sequelize(process.env.DATABASE_CONNECTION_STRING);
+if (process.env.DATABASE_URL) {
+  sequelize = new Sequelize(process.env.DATABASE_URL);
 } else {
   sequelize = new Sequelize(
     process.env.DATABASE,
@@ -20,7 +20,7 @@ const models = {
   Question: sequelize.import('./question'),
   Answer: sequelize.import('./answer'),
   Progress: sequelize.import('./progress'),
-  ProgressAnswer: sequelize.import('./progress-answer')
+  ProgressAnswer: sequelize.import('./progress-answer'),
 };
 
 Object.keys(models).forEach(key => {

@@ -5,10 +5,7 @@ import express from 'express';
 import * as swaggerUi from 'swagger-ui-express';
 import * as swaggerDocument from '../swagger/swagger.json';
 
-import {
-  parseQueryParams,
-  parseCookie
-} from './middlewares';
+import { parseQueryParams, parseCookie } from './middlewares';
 import { sequelize } from './db-models';
 import routes from './routes';
 
@@ -16,7 +13,11 @@ const app = express();
 const apiVersion = 'v1';
 
 // Swagger Docs
-app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerDocument));
+app.use(
+  '/api-docs',
+  swaggerUi.serve,
+  swaggerUi.setup(swaggerDocument),
+);
 
 // Middlewares
 app.use(cors());
@@ -40,18 +41,22 @@ app.use('/healthcheck', (req, res, next) => {
 
 // Handle no route request
 app.use((req, res, next) => {
-  const err = new Error(`Page Not Found - ${JSON.stringify(req.parsedQuery.href)}`);
+  const err = new Error(
+    `Page Not Found - ${JSON.stringify(req.parsedQuery.href)}`,
+  );
   res.status(404).send({ error: err.message });
 });
 
 const alterDatabaseOnSync = true;
 const eraseDatabaseOnSync = false; // if enabled, drops all tables and data on sync
-sequelize.sync({ force: eraseDatabaseOnSync, alter: alterDatabaseOnSync }).then(async () => {
-  if (eraseDatabaseOnSync) {
-    // erase tables data
-  }
+sequelize
+  .sync({ force: eraseDatabaseOnSync, alter: alterDatabaseOnSync })
+  .then(async () => {
+    if (eraseDatabaseOnSync) {
+      // erase tables data
+    }
 
-  app.listen(process.env.PORT, () =>
-    console.log(`App listening on port ${process.env.PORT}`),
-  );
-});
+    app.listen(process.env.PORT, () =>
+      console.log(`App listening on port ${process.env.PORT}`),
+    );
+  });
