@@ -1,0 +1,40 @@
+# docker-compose.yml
+version: "3"
+services:
+  client:
+    build: ./programming-questionnaire-ui
+    depends_on:
+      - app
+    environment:
+      REACT_APP_API_URI: http://localhost:8000
+      NODE_ENV: development
+    ports:
+      - "3000:3000"
+    command: npm start
+    volumes:
+      - .:/usr/app/ui/
+      - /usr/app/ui/node_modules
+
+  app:
+    build: ./programming-questionnaire-server
+    depends_on:
+      - postgres
+    environment:
+      DATABASE_URL: postgres://postgres:master123@postgres:5432/programming-questionnaire-server
+      NODE_ENV: development
+      PORT: 8000
+    ports:
+      - "8000:8000"
+    command: [sh, -c, "npm run sync && npm run seeders:load && npm start"]
+    volumes:
+      - .:/usr/app/server/
+      - /usr/app/server/node_modules
+
+  postgres:
+    image: postgres:alpine
+    ports:
+      - "35432:5432"
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: master123
+      POSTGRES_DB: programming-questionnaire-server
